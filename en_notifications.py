@@ -35,7 +35,7 @@ while True:
     
     for message in received:
         try:
-            logger.info('Got message ID {} with data {}.'.format(message[1].message_id, message[1].data)
+            logger.info('Got message ID {} with data {}.'.format(message[1].message_id, message[1].data))
             ack_ids.append(message[0])
         
         except:
