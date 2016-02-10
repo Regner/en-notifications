@@ -11,7 +11,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # App Settings                                                                                                                                        
-SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 10))
+SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 60))
 PULL_COUNT = int(os.environ.get('PULL_COUNT', 1))
 
 # Datastore Settings
