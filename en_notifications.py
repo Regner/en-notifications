@@ -22,12 +22,13 @@ SETTINGS_KIND = os.environ.get('DATASTORE_SETTINGS_KIND', 'EN-SETTINGS')
 PS_CLIENT = pubsub.Client()
 PS_TOPIC = PS_CLIENT.topic(os.environ.get('NOTIFICATION_TOPIC', 'send_notification'))
 
-if PS_TOPIC.exists() is False:
-    PS_TOPIC.create()
+if not PS_TOPIC.exists():
+    print PS_TOPIC.exists()
+    # PS_TOPIC.create()
 
 PS_SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
 
-if PS_SUBSCRIPTION.exists() is False:
+if not PS_SUBSCRIPTION.exists():
     PS_TOPIC.create()
 
 
