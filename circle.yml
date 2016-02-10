@@ -17,9 +17,9 @@ deployment:
     branch: master
     commands:
       - ./en-kube-config/docker-push.sh
-      - ./en-kube-config/deploy.sh "eve-notifications" "en-kube-config/en-notifications/en-notifications-rc-dev.yml.template" "en-en_notifications-dev"
+      - ./en-kube-config/deploy.sh "eve-notifications" "en-kube-config/en-notifications/en-notifications-rc-dev.yml.template" "en-notifications-dev"
 
   release:
     tag: /release-.*/
     commands:
-      - ./en-kube-config/deploy.sh "eve-notifications" "en-kube-config/en-notifications/en-notifications-rc-release.yml.template" "en-en_notifications-release"
+      - ./en-kube-config/deploy.sh "eve-notifications" "en-kube-config/en-notifications/en-notifications-rc-release.yml.template" "en-notifications-release"
