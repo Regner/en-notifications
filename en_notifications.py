@@ -27,6 +27,9 @@ if not PS_TOPIC.exists():
 
 PS_SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
 
+if not PS_SUBSCRIPTION.exists():
+    PS_TOPIC.create()
+
 
 while True:
     logger.info('Polling for new notifications...')
@@ -41,6 +44,6 @@ while True:
         except:
             logger.info('Something went wrong with message ID {}.'.format(message[1].message_id))
     
-    PS_SUBSCRIPTION.acknowledge(ack_ids)
+        PS_SUBSCRIPTION.acknowledge(ack_ids)
 
     sleep(SLEEP_TIME)
