@@ -25,7 +25,7 @@ PS_TOPIC = PS_CLIENT.topic(os.environ.get('NOTIFICATION_TOPIC', 'send_notificati
 if not PS_TOPIC.exists():
     PS_TOPIC.create()
 
-SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
+PS_SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
 
 
 while True:
