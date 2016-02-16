@@ -19,7 +19,7 @@ PULL_COUNT = int(os.environ.get('PULL_COUNT', 1))
 EN_GCM_URL = os.environ.get('EN_GCM_URL', 'http://en-gcm:8000/')
 
 # GCM Settings
-GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY')
+GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
 
 # Datastore Settings
 DS_CLIENT = datastore.Client()
@@ -39,7 +39,7 @@ if not PS_SUBSCRIPTION.exists():
 
 
 def get_tokens_from_char_ids(character_ids):
-    params = {'character_ids': ','.join(character_ids)
+    params = {'character_ids': ','.join(character_ids)}
     response = requests.get(EN_GCM_URL, params=params)
     response.raise_for_status()
     
