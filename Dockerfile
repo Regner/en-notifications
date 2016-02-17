@@ -18,4 +18,6 @@ WORKDIR /en_notifications/
 
 RUN pip install -r requirements.txt
 
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
 CMD python /en_notifications/en_notifications.py
