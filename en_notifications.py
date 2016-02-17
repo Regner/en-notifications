@@ -39,7 +39,7 @@ if not PS_SUBSCRIPTION.exists():
 
 
 def get_tokens_from_char_ids(character_ids):
-    params = {'character_ids': ','.join(character_ids)}
+    params = {'character_ids': ','.join(str(character_ids))}
     response = requests.get(EN_GCM_URL, params=params)
     response.raise_for_status()
     
