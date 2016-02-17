@@ -16,7 +16,7 @@ logger.setLevel(logging.INFO)
 # App Settings                                                                                                                                        
 DEFAULT_SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 60))
 PULL_COUNT = int(os.environ.get('PULL_COUNT', 1))
-EN_GCM_URL = os.environ.get('EN_GCM_URL', 'http://en-gcm:8000/')
+EN_GCM_URL = os.environ.get('EN_GCM_URL', 'http://en-gcm:8000/internal/')
 
 # GCM Settings
 GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
@@ -39,7 +39,7 @@ if not PS_SUBSCRIPTION.exists():
 
 
 def get_tokens_from_char_ids(character_ids):
-    params = {'character_ids': ','.join(str(character_ids))}
+    params = {'character_ids': ','.join([str(x) for x in character_ids])}
     response = requests.get(EN_GCM_URL, params=params)
     response.raise_for_status()
     
