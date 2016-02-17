@@ -13,6 +13,7 @@ ENV GCLOUD_DATASET_ID "your gce project"
 
 ADD en_notifications.py /en_notifications/
 ADD requirements.txt /en_notifications/
+ADD docker-entrypoint.sh /docker-entrypoint.sh
 
 WORKDIR /en_notifications/
 
