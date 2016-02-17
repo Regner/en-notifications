@@ -55,9 +55,9 @@ while True:
     for message in received:
         logger.info('Got message ID {} with data {}.'.format(message[1].message_id, message[1].data))
         
-        title = message[1].data
         url = message[1].attributes['url']
-        feed_name = message[1].attributes['feed_name']
+        title = message[1].attributes['title']
+        subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
         collapse_key = message[1].attributes['collapse_key']
         character_ids = json.loads(message[1].attributes['character_ids'])
@@ -66,8 +66,8 @@ while True:
         
         notification = {
             'title': title,
+            'subtitle': subtitle,
             'url': url,
-            'feed_name': feed_name,
         }
         
         logger.info('Sending message to {} tokens.'.format(len(tokens)))
