@@ -53,7 +53,7 @@ while True:
     ack_ids = []
     
     for message in received:
-        logger.info('Got message ID {} with data {}.'.format(message[1].message_id, message[1].data))
+        logger.info('Got message ID {} with attributes {}.'.format(message[1].message_id, message[1].attributes))
         
         url = message[1].attributes['url']
         title = message[1].attributes['title']
