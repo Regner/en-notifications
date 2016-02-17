@@ -72,7 +72,7 @@ while True:
         
         logger.info('Sending message to {} tokens.'.format(len(tokens)))
         
-        response = GCM.json_request(
+        response = GCM_CLIENT.json_request(
             registration_ids=tokens,
             data=notification,
             collapse_key=collapse_key,
