@@ -46,7 +46,7 @@ while True:
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
-        topic = message[1].attributes['topic']
+        topics = json.loads(message[1].attributes['topics'])
         
         notification = {
             'title': title,
@@ -54,12 +54,13 @@ while True:
             'url': url,
         }
         
-        logger.info('Sending message to {} tokens.'.format(len(tokens)))
-        
-        response = GCM_CLIENT.send_topic_message(
-            data=notification,
-            topic=topic,
-        )
+        for topic in topics:
+            logger.info('Sending message to the following topic {}'.format(len(topic)))
+            
+            response = GCM_CLIENT.send_topic_message(
+                data=notification,
+                topic=topic,
+            )
         
         ack_ids.append(message[0])
     
