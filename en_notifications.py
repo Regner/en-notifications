@@ -16,14 +16,9 @@ logger.setLevel(logging.INFO)
 # App Settings                                                                                                                                        
 DEFAULT_SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 60))
 PULL_COUNT = int(os.environ.get('PULL_COUNT', 1))
-EN_GCM_URL = os.environ.get('EN_GCM_URL', 'http://en-gcm:8000/internal/')
 
 # GCM Settings
 GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
-
-# Datastore Settings
-DS_CLIENT = datastore.Client()
-SETTINGS_KIND = os.environ.get('DATASTORE_SETTINGS_KIND', 'EN-SETTINGS')
 
 # PubSub Settings
 PS_CLIENT = pubsub.Client()
@@ -36,14 +31,6 @@ PS_SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
 
 if not PS_SUBSCRIPTION.exists():
     PS_SUBSCRIPTION.create()
-
-
-def get_tokens_from_char_ids(character_ids):
-    params = {'character_ids': ','.join([str(x) for x in character_ids])}
-    response = requests.get(EN_GCM_URL, params=params)
-    response.raise_for_status()
-    
-    return response.json()
 
 
 while True:
@@ -59,10 +46,7 @@ while True:
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
-        collapse_key = message[1].attributes['collapse_key']
-        character_ids = json.loads(message[1].attributes['character_ids'])
-        
-        tokens = get_tokens_from_char_ids(character_ids)
+        topic = message[1].attributes['topic']
         
         notification = {
             'title': title,
@@ -72,14 +56,10 @@ while True:
         
         logger.info('Sending message to {} tokens.'.format(len(tokens)))
         
-        response = GCM_CLIENT.json_request(
-            registration_ids=tokens,
+        response = GCM_CLIENT.send_topic_message(
             data=notification,
-            collapse_key=collapse_key,
+            topic=topic,
         )
-        
-        # Update registration IDs
-        # Remove registration IDs
         
         ack_ids.append(message[0])
     
