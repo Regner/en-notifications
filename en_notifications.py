@@ -49,9 +49,11 @@ while True:
         topics = json.loads(message[1].attributes['topics'])
         
         notification = {
-            'title': title,
-            'subtitle': subtitle,
-            'url': url,
+            'notification': {
+                'title': title,
+                'subtitle': subtitle,
+                'url': url,
+            }
         }
         
         for topic in topics:
