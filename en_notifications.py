@@ -57,7 +57,7 @@ while True:
         }
         
         for topic in topics:
-            logger.info('Sending message to the following topic {}'.format(topic))
+            logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
             
             response = GCM_CLIENT.send_topic_message(
                 data=notification,
