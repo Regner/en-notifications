@@ -55,7 +55,7 @@ while True:
         }
         
         for topic in topics:
-            logger.info('Sending message to the following topic {}'.format(len(topic)))
+            logger.info('Sending message to the following topic {}'.format(topic))
             
             response = GCM_CLIENT.send_topic_message(
                 data=notification,
