@@ -42,7 +42,7 @@ while True:
     for message in received:
         logger.info('Got message ID {} with attributes {}.'.format(message[1].message_id, message[1].attributes))
         
-        url = message[1].attributes['url']
+        url = message[1].attributes.get('url', None)
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
@@ -52,9 +52,11 @@ while True:
             'notification': {
                 'title': title,
                 'subtitle': subtitle,
-                'url': url,
             }
         }
+        
+        if url is not None:
+            notification['notification']['url'] = url
         
         for topic in topics:
             logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
