@@ -48,7 +48,8 @@ while True:
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
-        topics = json.loads(message[1].attributes['topics'])
+        topics = json.loads( message[1].attributes.get('topics', None))
+        topic =  message[1].attributes.get('topic', None)
         
         notification = {
             'notification': {
@@ -69,14 +70,22 @@ while True:
         
         if collapse_key is not None:
             gcm_kwargs['collapse_key'] = collapse_key
-            
         
-        for topic in topics:
+        
+        if topic is not None:
             logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
             
             gcm_kwargs['topic'] = topic
             
             response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
+        
+        else:
+            for topic in topics:
+                logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
+                
+                gcm_kwargs['topic'] = topic
+                
+                response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
         
         ack_ids.append(message[0])
     
