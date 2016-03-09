@@ -33,6 +33,35 @@ if not PS_SUBSCRIPTION.exists():
     PS_SUBSCRIPTION.create()
 
 
+def format_notification(title, subtitle, url, extra_text):
+    notification = {
+        'notification': {
+            'title': title,
+            'subtitle': subtitle,
+        }
+    }
+    
+    if url is not None:
+        notification['notification']['url'] = url
+        
+    if extra_text is not None:
+        notification['notification']['extra_text'] = extra_text
+    
+    return notification
+
+
+def format_gcm_kwargs(notification, topic, collapse_key):
+    gcm_kwargs = {
+        'data': notification,
+        'topic': topic,
+    }
+    
+    if collapse_key is not None:
+        gcm_kwargs['collapse_key'] = collapse_key
+    
+    return gcm_kwargs
+
+
 while True:
     logger.info('Polling for new notifications...')
     received = PS_SUBSCRIPTION.pull(max_messages=PULL_COUNT)
@@ -48,44 +77,14 @@ while True:
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
-        topics = json.loads( message[1].attributes.get('topics', None))
-        topic =  message[1].attributes.get('topic', None)
+        topic =  message[1].attributes['topic']
         
-        notification = {
-            'notification': {
-                'title': title,
-                'subtitle': subtitle,
-            }
-        }
+        notification = format_notification(title, subtitle, url, extra_text)
+        gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
+
+        logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
         
-        if url is not None:
-            notification['notification']['url'] = url
-            
-        if extra_text is not None:
-            notification['notification']['extra_text'] = extra_text
-        
-        gcm_kwargs = {
-            'data': notification,
-        }
-        
-        if collapse_key is not None:
-            gcm_kwargs['collapse_key'] = collapse_key
-        
-        
-        if topic is not None:
-            logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
-            
-            gcm_kwargs['topic'] = topic
-            
-            response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
-        
-        else:
-            for topic in topics:
-                logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
-                
-                gcm_kwargs['topic'] = topic
-                
-                response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
+        response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
         
         ack_ids.append(message[0])
     
