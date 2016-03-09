@@ -44,6 +44,7 @@ while True:
         
         url = message[1].attributes.get('url', None)
         extra_text = message[1].attributes.get('extra_text', None)
+        collapse_key = message[1].attributes.get('collapse_key', None)
         title = message[1].attributes['title']
         subtitle = message[1].attributes['subtitle']
         service = message[1].attributes['service']
@@ -62,13 +63,20 @@ while True:
         if extra_text is not None:
             notification['notification']['extra_text'] = extra_text
         
+        gcm_kwargs = {
+            'data': notification,
+        }
+        
+        if collapse_key is not None:
+            gcm_kwargs['collapse_key'] = collapse_key
+            
+        
         for topic in topics:
             logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
             
-            response = GCM_CLIENT.send_topic_message(
-                data=notification,
-                topic=topic,
-            )
+            gcm_kwargs['topic'] = topic
+            
+            response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
         
         ack_ids.append(message[0])
     
