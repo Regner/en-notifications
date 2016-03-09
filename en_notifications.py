@@ -91,8 +91,11 @@ while True:
         
         ack_ids.append(message[0])
     
+    logger.info('ack_ids {}'.format(ack_ids))
+    
     if len(ack_ids) > 0:
         PS_SUBSCRIPTION.acknowledge(ack_ids)
         sleep_time = 0
     
+    logger.info('sleep_time {}'.format(sleep_time))
     sleep(sleep_time)
