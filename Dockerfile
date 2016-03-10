@@ -7,8 +7,8 @@ RUN apt-get update -qq \
 && apt-get upgrade -y -qq \
 && apt-get install -y -qq python-dev python-pip \
 && apt-get autoremove -y \
-&& apt-get clean autoclean
-&& pip install -qU pip \
+&& apt-get clean autoclean \
+&& pip install -qU pip
 
 ENV GOOGLE_APPLICATION_CREDENTIALS "path-to-credentials.json"
 ENV GCLOUD_DATASET_ID "your gce project"
