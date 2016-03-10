@@ -69,6 +69,10 @@ while True:
     ack_ids = []
     
     for message in received:
+        if 'topics' in message[1].attributes:
+            ack_ids.append(message[0])
+            continue
+        
         try:
             logger.info('Got message ID {} with attributes {}.'.format(message[1].message_id, message[1].attributes))
             
