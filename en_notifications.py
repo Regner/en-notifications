@@ -56,23 +56,22 @@ def message():
     
     app.logger.info('Got a new message {}.'.format(message))
 
-    # url = message[1].attributes.get('url', None)
-    # extra_text = message[1].attributes.get('extra_text', None)
-    # collapse_key = message[1].attributes.get('collapse_key', None)
-    # title = message[1].attributes['title']
-    # subtitle = message[1].attributes['subtitle']
-    # service = message[1].attributes['service']
-    # topic =  message[1].attributes['topic']
+    # url = message['attributes'].get('url', None)
+    # extra_text = message['attributes'].get('extra_text', None)
+    # collapse_key = message['attributes'].get('collapse_key', None)
+    # title = message['attributes']['title']
+    # subtitle = message['attributes']['subtitle']
+    # service = message['attributes']['service']
+    # topic =  message['attributes']['topic']
     
     # notification = format_notification(title, subtitle, url, extra_text)
     # gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
 
-    # logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
+    # app.logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
     
     # response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
 
-
-    return {}, 200
+    return ''
 
 
 if __name__ == '__main__':
