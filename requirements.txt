@@ -1,3 +1,8 @@
-gcloud==0.10.1
-requests==2.9.1
+# Flask
+flask==0.10.1
+
+# Other
 python-gcm==0.4
+
+# Production
+gunicorn==19.4.5

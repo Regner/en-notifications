@@ -3,34 +3,22 @@
 import os
 import json
 import logging
-import requests
 
 from gcm import GCM
-from time import sleep
-from gcloud import datastore, pubsub
+from flask import Flask, request
 
-logging.basicConfig()
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
-# App Settings                                                                                                                                        
-DEFAULT_SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 20))
-PULL_COUNT = int(os.environ.get('PULL_COUNT', 30))
+app = Flask(__name__)
+
+# App Settings
+app.config['BUNDLE_ERRORS'] = True
 
 # GCM Settings
 GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
 
-# PubSub Settings
-PS_CLIENT = pubsub.Client()
-PS_TOPIC = PS_CLIENT.topic(os.environ.get('NOTIFICATION_TOPIC', 'send_notification'))
-
-if not PS_TOPIC.exists():
-    PS_TOPIC.create()
-
-PS_SUBSCRIPTION = PS_TOPIC.subscription('en_notifications')
-
-if not PS_SUBSCRIPTION.exists():
-    PS_SUBSCRIPTION.create()
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+app.logger.addHandler(stream_handler)
 
 
 def format_notification(title, subtitle, url, extra_text):
@@ -62,38 +50,30 @@ def format_gcm_kwargs(notification, topic, collapse_key):
     return gcm_kwargs
 
 
-while True:
-    logger.info('Polling for new notifications...')
-    received = PS_SUBSCRIPTION.pull(max_messages=PULL_COUNT)
-    sleep_time = DEFAULT_SLEEP_TIME
-    ack_ids = []
+@app.route('/external/', methods=['POST'])
+def message(self):
+    message = request.json
     
-    for message in received:
-        try:
-            logger.info('Got message ID {} with attributes {}.'.format(message[1].message_id, message[1].attributes))
-            
-            url = message[1].attributes.get('url', None)
-            extra_text = message[1].attributes.get('extra_text', None)
-            collapse_key = message[1].attributes.get('collapse_key', None)
-            title = message[1].attributes['title']
-            subtitle = message[1].attributes['subtitle']
-            service = message[1].attributes['service']
-            topic =  message[1].attributes['topic']
-            
-            notification = format_notification(title, subtitle, url, extra_text)
-            gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
+    app.logger.info('Got a new message {}.'.format(message))
+
+    # url = message[1].attributes.get('url', None)
+    # extra_text = message[1].attributes.get('extra_text', None)
+    # collapse_key = message[1].attributes.get('collapse_key', None)
+    # title = message[1].attributes['title']
+    # subtitle = message[1].attributes['subtitle']
+    # service = message[1].attributes['service']
+    # topic =  message[1].attributes['topic']
     
-            logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
-            
-            response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
-            
-            ack_ids.append(message[0])
-        
-        except Exception as e:
-            logger.error('Failed to send notification for message {}. Got error {}.'.format(message, e))
+    # notification = format_notification(title, subtitle, url, extra_text)
+    # gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
+
+    # logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
     
-    if len(ack_ids) > 0:
-        PS_SUBSCRIPTION.acknowledge(ack_ids)
-        sleep_time = 0
-    
-    sleep(sleep_time)
+    # response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
+
+
+    return {}, 200
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0', port=8080)
