@@ -14,8 +14,8 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 # App Settings                                                                                                                                        
-DEFAULT_SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 60))
-PULL_COUNT = int(os.environ.get('PULL_COUNT', 10))
+DEFAULT_SLEEP_TIME = int(os.environ.get('SLEEP_TIME', 20))
+PULL_COUNT = int(os.environ.get('PULL_COUNT', 30))
 
 # GCM Settings
 GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
@@ -69,10 +69,6 @@ while True:
     ack_ids = []
     
     for message in received:
-        if 'topics' in message[1].attributes:
-            ack_ids.append(message[0])
-            continue
-        
         try:
             logger.info('Got message ID {} with attributes {}.'.format(message[1].message_id, message[1].attributes))
             
