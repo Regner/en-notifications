@@ -16,10 +16,6 @@ app.config['BUNDLE_ERRORS'] = True
 # GCM Settings
 GCM_CLIENT = GCM(os.environ.get('GCM_API_KEY'))
 
-stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.INFO)
-app.logger.addHandler(stream_handler)
-
 
 def format_notification(title, subtitle, url, extra_text):
     notification = {
@@ -52,26 +48,33 @@ def format_gcm_kwargs(notification, topic, collapse_key):
 
 @app.route('/external/', methods=['POST'])
 def message():
-    message = request.json
+    message = request.json['message']
     
     app.logger.info('Got a new message {}.'.format(message))
 
-    # url = message['attributes'].get('url', None)
-    # extra_text = message['attributes'].get('extra_text', None)
-    # collapse_key = message['attributes'].get('collapse_key', None)
-    # title = message['attributes']['title']
-    # subtitle = message['attributes']['subtitle']
-    # service = message['attributes']['service']
-    # topic =  message['attributes']['topic']
+    url = message['attributes'].get('url', None)
+    extra_text = message['attributes'].get('extra_text', None)
+    collapse_key = message['attributes'].get('collapse_key', None)
+    title = message['attributes']['title']
+    subtitle = message['attributes']['subtitle']
+    service = message['attributes']['service']
+    topic =  message['attributes']['topic']
     
-    # notification = format_notification(title, subtitle, url, extra_text)
-    # gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
+    notification = format_notification(title, subtitle, url, extra_text)
+    gcm_kwargs = format_gcm_kwargs(notification, topic, collapse_key)
 
-    # app.logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
+    app.logger.info('Sending message to the following topic "/topics/{}"'.format(topic))
     
-    # response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
+    response = GCM_CLIENT.send_topic_message(**gcm_kwargs)
 
-    return ''
+    return ('', 204)
+
+
+@app.before_first_request
+def setup_logging():
+    if not app.debug:
+        app.logger.addHandler(logging.StreamHandler())
+        app.logger.setLevel(logging.INFO)
 
 
 if __name__ == '__main__':
