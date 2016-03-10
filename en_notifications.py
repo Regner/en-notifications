@@ -51,7 +51,7 @@ def format_gcm_kwargs(notification, topic, collapse_key):
 
 
 @app.route('/external/', methods=['POST'])
-def message(self):
+def message():
     message = request.json
     
     app.logger.info('Got a new message {}.'.format(message))
