@@ -1,6 +1,6 @@
 
 
-FROM debian:jessie
+FROM debian:latest
 MAINTAINER Regner Blok-Andersen <shadowdf@gmail.com>
 
 ENV GCM_API_KEY "GCM API Key"
